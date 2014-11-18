@@ -1,0 +1,25 @@
+---
+# tasks file for base
+
+- name: Change timezone
+  copy: "content='{{ timezone }}' dest=/etc/timezone owner=root group=root mode=0644 backup=yes"
+  notify: update timezone
+  tags: base
+    
+- name: Install packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - wget
+    - curl
+    - ntp
+  tags: base
+
+- name: Configure NTP in /etc/ntp.conf
+  template: src=ntp.conf dest=/etc/ntp.conf
+  notify:
+    - restart ntp    
+  tags: base
+
+- name: Be sure ntpd is running and enabled
+  service: name=ntp state=started enabled=yes
+  tags: base

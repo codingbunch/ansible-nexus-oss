@@ -1,0 +1,29 @@
+---
+# tasks file for oraclejdk
+
+- name: Install packages for Oracle JDK 7
+  apt: pkg={{item}} state=latest
+  with_items:
+    - debconf
+    - debconf-utils
+  tags: java
+
+- name: Add the webupd8 APT repository
+  apt_repository: repo="ppa:webupd8team/java"
+  tags: java  
+
+- name: Automatically select the Oracle License
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+  changed_when: false  
+  tags: java
+
+- name: Install Oracle JDK 7
+  apt: pkg={{item}} state=latest update_cache=yes
+  with_items:
+    -  oracle-java7-installer
+    -  oracle-java7-set-default
+  tags: java
+
+- name: Set JAVA_HOME environment variable
+  lineinfile: dest=/etc/environment regexp='^export JAVA_HOME.*' line='export JAVA_HOME=/usr/java/latest' insertbefore='^PATH.*'
+  tags: java 

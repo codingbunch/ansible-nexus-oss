@@ -1,0 +1,76 @@
+---
+# tasks file for nexus
+
+- name: Add nexus group
+  group: name=nexus state=present
+  tags: nexus
+
+- name: Add nexus user
+  user: name=nexus comment="Nexus" group=nexus createhome=yes
+  tags: nexus
+
+- name: Download Nexus
+  command: > 
+    wget http://download.sonatype.com/nexus/oss/nexus-{{ nexus.version }}-bundle.tar.gz 
+    chdir=/tmp 
+    creates=/tmp/nexus-{{ nexus.version }}-bundle.tar.gz
+  tags: nexus
+
+- name: Create Nexus directory
+  file: path={{ nexus.base_dir }} state=directory
+  tags: nexus
+
+- name: Unpackage Nexus tarball
+  unarchive: "copy=no src=/tmp/nexus-{{ nexus.version }}-bundle.tar.gz dest={{ nexus.base_dir }} creates={{ nexus.base_dir }}/nexus-{{ nexus.unpackaged_version }}"
+  tags: nexus
+
+- name: Update the symbolic link to the Nexus install
+  file: "path={{ nexus.home }} src={{ nexus.base_dir }}/nexus-{{ nexus.unpackaged_version }} state=link force=yes owner=nexus group=nexus"
+  tags: nexus
+
+- name: Set NEXUS_HOME environment variable
+  lineinfile: "dest=/etc/environment regexp='^export NEXUS_HOME.*' line='export NEXUS_HOME={{ nexus.home }}' insertbefore='^PATH.*'"
+  tags: nexus 
+
+- name: Change ownership of nexus folder to the nexus user and nexus group
+  file: path={{ nexus.base_dir }}/nexus-{{ nexus.unpackaged_version }} owner=nexus group=nexus recurse=yes
+  tags: nexus
+
+- name: Move work directory to data directory
+  command: mv {{ nexus.base_dir}}/sonatype-work {{ nexus.data_dir }} creates={{ nexus.data_dir }}/sonatype-work
+  tags: nexus
+
+- name: Change ownership of work directory to the nexus user and nexus group
+  file: path={{ nexus.data_dir }}/sonatype-work owner=nexus group=nexus recurse=yes
+  tags: nexus  
+
+- name: Change Nexus work directory in nexus.properties file
+  replace: dest={{ nexus.home }}/conf/nexus.properties regexp='^nexus-work=(.*)$' replace='nexus-work={{ nexus.data_dir }}/sonatype-work/nexus'
+  tags: nexus
+
+- name: Change Nexus home in binary file
+  replace: dest={{ nexus.home }}/bin/nexus regexp='^NEXUS_HOME=(.*)$' replace='NEXUS_HOME={{ nexus.home }}'
+  tags: nexus
+
+- name: Change Nexus user in binary file
+  replace: dest={{ nexus.home }}/bin/nexus regexp='^#RUN_AS_USER=(.*)$' replace='RUN_AS_USER=nexus'
+  tags: nexus 
+
+- name: Change Nexus piddir in binary file
+  replace: dest={{ nexus.home }}/bin/nexus regexp='^#PIDDIR=(.*)$' replace='PIDDIR=/home/nexus'
+  tags: nexus
+
+- name: Copy Nexus binary to /etc/init.d
+  command: "cp {{ nexus.home }}/bin/nexus /etc/init.d/nexus creates=/etc/init.d/nexus"
+  tags: nexus
+
+- name: Make Nexus script executable
+  file: path=/etc/init.d/nexus mode=755
+  tags: nexus
+
+- name: Enable Nexus service
+  service: name=nexus enabled=yes
+  notify: restart nexus
+  tags: nexus
+
+

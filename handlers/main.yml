@@ -1,0 +1,13 @@
+---
+
+- name: update timezone
+  command: dpkg-reconfigure --frontend noninteractive tzdata
+  sudo: yes
+
+- name: restart ntp
+  service: name=ntp state=restarted
+  sudo: yes
+
+- name: restart nexus
+  service: name=nexus state=restarted
+  sudo: yes
