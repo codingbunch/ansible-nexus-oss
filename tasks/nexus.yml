@@ -36,8 +36,12 @@
   file: path={{ nexus.base_dir }}/nexus-{{ nexus.unpackaged_version }} owner=nexus group=nexus recurse=yes
   tags: nexus
 
+- name: Create data directory
+  file: path={{ nexus.data_dir }} state=directory
+  tags: nexus
+
 - name: Move work directory to data directory
-  command: mv {{ nexus.base_dir}}/sonatype-work {{ nexus.data_dir }} creates={{ nexus.data_dir }}/sonatype-work
+  command: mv {{ nexus.base_dir}}/sonatype-work {{ nexus.data_dir }}/sonatype-work creates={{ nexus.data_dir }}/sonatype-work
   tags: nexus
 
 - name: Change ownership of work directory to the nexus user and nexus group
