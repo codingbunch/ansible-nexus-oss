@@ -88,7 +88,7 @@ First create a playbook including the nexus role, naming it nexus.yml
 - name: Nexus
   hosts: nexus
   roles:
-    - ansible-nexus
+    - nexus
 ```
 
 Use *ansible.host* as inventory. Run the playbook only for the remote host *nexus*. Use *vagrant* as the SSH user to connect to the remote host. *-k* enables the SSH password prompt.
