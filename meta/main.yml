@@ -4,7 +4,7 @@ galaxy_info:
   description: 
   company: CodingBunch
   license: MIT
-  min_ansible_version: 1.6
+  min_ansible_version: 1.7
   platforms:
     - name: Ubuntu
       versions:
