@@ -13,8 +13,8 @@ ntp_server7: ntp.ubuntu.com # fallback
 
 # NEXUS
 nexus:
-  version: 2.10.0
-  unpackaged_version: 2.10.0-02
+  version: 2.11.1
+  unpackaged_version: 2.11.1-01
   base_dir: /opt
   home: /opt/nexus
   data_dir: /data
