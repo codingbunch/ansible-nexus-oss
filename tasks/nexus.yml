@@ -73,7 +73,7 @@
   tags: nexus
 
 - name: Enable Nexus service
-  service: name=nexus enabled=yes
+  service: name=nexus enabled=yes state=started
   notify: restart nexus
   tags: nexus
 
