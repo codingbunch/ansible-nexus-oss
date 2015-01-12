@@ -1,0 +1,5 @@
+- name: Nexus
+  hosts: nexus
+  gather_facts: yes
+  roles:
+    - ansible-nexus-oss
