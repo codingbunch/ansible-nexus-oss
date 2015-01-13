@@ -1,7 +1,7 @@
-- name: Nexus
-  hosts: nexus
+---
+- hosts: nexus
   gather_facts: yes
   roles:
     - ansible-nexus-oss
-- name: wait for nexus to restart 
-  wait_for: port=8081 delay=10
+  tasks:
+    - wait_for: port=8081 delay=10
