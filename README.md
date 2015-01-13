@@ -1,5 +1,7 @@
 # Ansible Nexus OSS Role
 
+[![Build Status](https://travis-ci.org/maaaikoool/ansible-nexus-oss.svg?branch=master)](https://travis-ci.org/maaaikoool/ansible-nexus-oss)
+
 ## Description
 
 *ansible-nexus-oss* is an [Ansible](http://ansible.com) role.

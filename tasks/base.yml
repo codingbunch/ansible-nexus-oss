@@ -1,15 +1,27 @@
 ---
 # tasks file for base
 
+- name: check current timezone
+  shell: cat /etc/timezone
+  register: current_zone
+  changed_when: False
+
+- name: check current localtime
+  shell: cat /etc/localtime
+  register: current_time
+  changed_when: False
+
 - name: Change timezone
   copy: "content='{{ timezone }}' dest=/etc/timezone owner=root group=root mode=0644 backup=yes"
+  when: current_zone.stdout != timezone
   notify: update timezone
   tags: base
 
 - name: Change localtime
   copy: "src=/usr/share/zoneinfo/{{ timezone }} dest=/etc/localtime"
+  when: current_time.stdout != timezone
   tags: base    
-    
+
 - name: Install packages
   apt: pkg={{ item }} state=latest
   with_items:

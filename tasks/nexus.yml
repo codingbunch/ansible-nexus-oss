@@ -10,10 +10,7 @@
   tags: nexus
 
 - name: Download Nexus
-  command: > 
-    wget http://download.sonatype.com/nexus/oss/nexus-{{ nexus.version }}-bundle.tar.gz 
-    chdir=/tmp 
-    creates=/tmp/nexus-{{ nexus.version }}-bundle.tar.gz
+  get_url: url=http://download.sonatype.com/nexus/oss/nexus-{{ nexus.version }}-bundle.tar.gz  dest=/tmp
   tags: nexus
 
 - name: Create Nexus directory
@@ -73,7 +70,7 @@
   tags: nexus
 
 - name: Enable Nexus service
-  service: name=nexus enabled=yes
+  service: name=nexus enabled=yes state=started
   notify: restart nexus
   tags: nexus
 
