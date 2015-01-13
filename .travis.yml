@@ -27,4 +27,4 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
   # Make sure nexus is running
-  #- curl http://localhost/8081/nexus
+  - curl http://localhost:8081/nexus
